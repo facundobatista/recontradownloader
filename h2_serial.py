@@ -71,11 +71,13 @@ def run (urls, verbose=False):
 
         # print("Response fully received:")
         # print(body.decode())
+        c.close_connection()
+        s.sendall(c.data_to_send())
         results.append(body)
 
     # tell the server we are closing the h2 connection
-    c.close_connection()
-    s.sendall(c.data_to_send())
+    # c.close_connection()
+    # s.sendall(c.data_to_send())
 
     # close the socket
     s.close()
