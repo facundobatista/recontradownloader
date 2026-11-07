@@ -29,6 +29,20 @@ REALCASES = [
 SAMPLE = REALCASES[0]
 
 
+def check(hashorig, result):
+    try:
+        hashresult = hashlib.sha256(result).hexdigest()
+    except Exception:
+        breakpoint()
+        ok = "FAIL"
+    else:
+        if hashresult == hashorig:
+            ok = "ok"
+        else:
+            ok = "FAIL"
+    return ok
+
+
 def test(mod):
     hashorig, url = SAMPLE
     tini = time.time()
@@ -39,16 +53,7 @@ def test(mod):
     except Exception as exc:
         ok = f"ERROR: {exc!r}"
     else:
-        try:
-            hashresult = hashlib.sha256(result[0]).hexdigest()
-        except Exception:
-            breakpoint()
-            ok = "FAIL"
-        else:
-            if hashresult == hashorig:
-                ok = "ok"
-            else:
-                ok = "FAIL"
+        ok = check(hashorig, result[0])
     finally:
         tfin = time.time()
 
@@ -61,16 +66,13 @@ def measure(mod):
     for quant in [1, 2, 3, 5, 10]:
         tini = time.time()
         try:
-            result = mod.run([url] * quant, lambda *a, **k: None)
+            results = mod.run([url] * quant, lambda *a, **k: None)
         except Exception as exc:
             tfin = time.time()
             ok = f"ERROR: {exc!r}"
         else:
             tfin = time.time()
-            if all(hashlib.sha256(item).hexdigest == hashorig for item in result):
-                ok = "ok"
-            else:
-                ok = "FAIL"
+            ok = [check(hashorig, result) for result in results]
 
         tdeltams = 1000 * (tfin - tini) / quant
         print(f"Measured {quant:2d}, {tdeltams:.2f}ms per file, {ok}")
