@@ -32,6 +32,7 @@ def run (urls, verbose=False):
 
     results = []
     for url in urls:
+        stream_id = c.get_next_available_stream_id()
         parsed_url = urlsplit(url)
         # SERVER_NAME = parsed_url.hostname
         PATH = parsed_url.path or '/'
@@ -42,7 +43,7 @@ def run (urls, verbose=False):
             (':authority', SERVER_NAME),
             (':scheme', 'https'),
         ]
-        c.send_headers(1, headers, end_stream=True)
+        c.send_headers(stream_id, headers, end_stream=True)
         s.sendall(c.data_to_send())
 
         body = b''
@@ -71,13 +72,11 @@ def run (urls, verbose=False):
 
         # print("Response fully received:")
         # print(body.decode())
-        c.close_connection()
-        s.sendall(c.data_to_send())
         results.append(body)
 
     # tell the server we are closing the h2 connection
-    # c.close_connection()
-    # s.sendall(c.data_to_send())
+    c.close_connection()
+    s.sendall(c.data_to_send())
 
     # close the socket
     s.close()
