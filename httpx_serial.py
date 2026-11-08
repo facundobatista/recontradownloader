@@ -2,7 +2,7 @@ import httpx
 
 
 def run(urls, log):
-    """Serial downloader using stdlib's request."""
+    """Serial downloader using httpx's http2 request."""
     client = httpx.Client(http2=True)
     results = []
     for url in urls:
