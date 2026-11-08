@@ -11,7 +11,7 @@ SERVER_PORT = 443
 
 
 def run(urls, verbose=False):
-  """HTTP/2 downloader using h2 library."""
+  """Parallel HTTP/2 downloader using h2 library."""
   first_url = urls[0]
   parsed_url = urlsplit(first_url)
   SERVER_NAME = parsed_url.hostname
