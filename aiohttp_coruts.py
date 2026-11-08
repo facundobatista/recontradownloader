@@ -19,6 +19,6 @@ async def main(urls, log):
 
 
 def run(urls, log):
-    """Serial downloader using stdlib's request."""
+    """Concurrent downloader using aiohttp coroutines."""
     results = asyncio.run(main(urls, log))
     return results

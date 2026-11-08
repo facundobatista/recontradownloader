@@ -4,7 +4,7 @@ import aiohttp
 
 
 def run(urls, log):
-    """Serial downloader using stdlib's request."""
+    """Serial downloader using aiohttp."""
     results = asyncio.run(main(urls, log))
     return results
 
