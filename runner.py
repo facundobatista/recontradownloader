@@ -1,3 +1,5 @@
+import glob
+import sys
 import argparse
 import hashlib
 import importlib
@@ -87,7 +89,22 @@ parser.add_argument(
 parser.add_argument("name", help="Name of the dowloader module.")
 args = parser.parse_args()
 
-mod = importlib.import_module(args.name)
-print("Running:", mod.run.__doc__)
-func = FUNCS[args.mode]
-func(mod)
+if args.name == "all":
+    for name in glob.glob("*.py"):
+        if name == "runner.py":
+            continue
+        name = name[:-3]  # remove .py extension
+        mod = importlib.import_module(name)
+        print("Running:", mod.run.__doc__)
+        func = FUNCS[args.mode]
+        func(mod)
+else:
+    mod = importlib.import_module(args.name)
+    print("Running:", mod.run.__doc__)
+    func = FUNCS[args.mode]
+    func(mod)
+
+# mod = importlib.import_module(args.name)
+# print("Running:", mod.run.__doc__)
+# func = FUNCS[args.mode]
+# func(mod)
